@@ -35,8 +35,8 @@
                             <td><?= $sb['icon']; ?></td>
                             <td><?= $sb['is_active']; ?></td>
                             <td>
-                                <a href="" class="badge badge-warning">Edit</a>
-                                <a href="" class="badge badge-danger">Delete</a>
+                                <a href="<?= base_url('menu/editSubmenu/') . $sb['id']; ?>" class="badge badge-warning">Edit</a>
+                                <a href="<?= base_url('menu/delete/') . $sb['id']; ?>" class="badge badge-danger">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

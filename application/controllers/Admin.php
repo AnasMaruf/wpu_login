@@ -10,9 +10,6 @@ class Admin extends CI_Controller
     }
     public function index()
     {
-        if (!$this->session->userdata('email')) {
-            redirect('admin');
-        }
 
         $data['title'] = 'Dashboard';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
@@ -31,11 +28,22 @@ class Admin extends CI_Controller
 
         $data['role'] = $this->db->get('user_role')->result_array();
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar', $data);
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('admin/role', $data);
-        $this->load->view('templates/footer', $data);
+        $this->form_validation->set_rules('role', 'Role', 'required|trim');
+
+        if ($this->form_validation->run() == false) {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/sidebar', $data);
+            $this->load->view('templates/topbar', $data);
+            $this->load->view('admin/role', $data);
+            $this->load->view('templates/footer', $data);
+        } else {
+            $role = $this->input->post('role');
+            $this->db->insert('user_role', ['role' => $role]);
+            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
+            New Role Added!
+            </div>');
+            redirect('admin/role');
+        }
     }
 
     public function roleAccess($role_id)
@@ -64,12 +72,14 @@ class Admin extends CI_Controller
             'role_id' => $role_id,
             'menu_id' => $menu_id
         ];
+
         $result = $this->db->get_where('user_access_menu', $data);
         if ($result->num_rows() < 1) {
             $this->db->insert('user_access_menu', $data);
         } else {
             $this->db->delete('user_access_menu', $data);
         }
+
         $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
         Access Changed!
         </div>');

@@ -6,6 +6,11 @@
     <div class="row">
         <div class="col-lg-6">
             <?= $this->session->flashdata('message'); ?>
+            <?php if (validation_errors()) : ?>
+                <div class="alert alert-danger" role="alert">
+                    <?= validation_errors(); ?>
+                </div>
+            <?php endif; ?>
             <a href="" class="btn btn-primary mb-3" data-toggle="modal" data-target="#newMenuModal">Add New Role</a>
             <table class="table table-hover">
                 <thead>
